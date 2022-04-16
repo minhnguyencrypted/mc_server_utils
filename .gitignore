@@ -1,0 +1,5 @@
+/dist/
+/denv/
+/demo_logs/
+/src/*.egg-info/
+/.idea/
