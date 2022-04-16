@@ -1,6 +1,6 @@
 import sys
 import getopt
-import log_parser
+from . import log_parser
 
 
 def print_help():
