@@ -1,40 +1,33 @@
 import sys
-import getopt
-from . import log_parser
+from . import logparser
+from . import argparser as ap
 
 
-def print_help():
-    print("""Usage:
-    -h, --help: show this help message and exit
-    -f, --file: specify the log file to parse""")
+def file_exception_handler(exception, filename):
+    if isinstance(exception, FileNotFoundError):
+        print(f'{filename}: File not found')
+    elif isinstance(exception, PermissionError):
+        print(f'{filename}: Permission denied')
+    else:
+        print(f'{filename}: {e}')
 
 
 if __name__ == "__main__":
+    print(ap.args)
     if len(sys.argv) == 1:
-        print_help()
+        ap.parser.print_help()
         sys.exit()
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hf:", ["help", "file="])
-    except getopt.GetoptError as err:
-        print("Error: " + str(err))
-        print_help()
-        sys.exit(2)
-
-    for o, a in opts:
-        if o in ("-h", "--help"):
-            print_help()
-        elif o in ("-f", "--file"):
-            try:
-                found = log_parser.parse(a)
+    if ap.args['file'] is not None:
+        try:
+            for file in ap.args['file']:
+                found = logparser.parse(file)
                 if found:
-                    print(f'Found {len(found)} un-whitelisted player(s)')
+                    print(f'{file}: Found {len(found)} un-whitelisted player(s)')
                     for player in found:
                         print(player)
                 else:
-                    print('No un-whitelisted players found')
-            except FileNotFoundError:
-                print(f'{a}: No such file or directory')
-            except PermissionError:
-                print(f'{a}: Permission denied')
-            except Exception as e:
-                print(f'{a}: Unknown error')
+                    print(f'{file}: No un-whitelisted players found')
+            sys.exit()
+        except Exception as e:
+            file_exception_handler(e, ap.args['file'])
+            sys.exit(2)
