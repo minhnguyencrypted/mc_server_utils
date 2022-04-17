@@ -13,7 +13,6 @@ def file_exception_handler(exception, filename):
 
 
 if __name__ == "__main__":
-    print(ap.args)
     if len(sys.argv) == 1:
         ap.parser.print_help()
         sys.exit()
@@ -24,7 +23,10 @@ if __name__ == "__main__":
                 if found:
                     print(f'{file}: Found {len(found)} un-whitelisted player(s)')
                     for player in found:
-                        print(player)
+                        print(f"""Player: {player['name']}
+    UUID: {player['id']}
+    IP and Port: {player['ip_port']}
+    Time: {player['time']}""")
                 else:
                     print(f'{file}: No un-whitelisted players found')
             sys.exit()

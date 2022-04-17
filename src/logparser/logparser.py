@@ -16,5 +16,11 @@ def parse(file_name):
             player_name = splits2[2].split(',')[0]
             # Stripping IP address and port number from the line
             ip_port = splits2[4].split('/')[1].split(')')[0]
-            found.append(f'{time} {player_id} {player_name} {ip_port}')
+            # found.append(f'{time} {player_id} {player_name} {ip_port}')
+            found.append({
+                'time': time,
+                'id': player_id,
+                'name': player_name,
+                'ip_port': ip_port
+            })
     return found
