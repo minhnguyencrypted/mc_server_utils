@@ -27,7 +27,7 @@ def print_players_list(players):
 
 
 if __name__ == "__main__":
-    print(ap.args)
+    # print(ap.args)
     if len(sys.argv) == 1:
         ap.parser.print_help()
         sys.exit()
