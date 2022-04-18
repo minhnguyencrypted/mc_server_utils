@@ -4,16 +4,17 @@ from . import logparser
 from . import argparser as ap
 
 
-def file_exception_handler(exception, filename):
-    if isinstance(exception, FileNotFoundError):
-        print(f'[ERROR] [{filename}]: File not found')
-    elif isinstance(exception, PermissionError):
-        print(f'[ERROR] [{filename}]: Permission denied')
-    else:
-        print(f'[ERROR] [{filename}]: {e}')
+def file_exception_handler(exception, filename, ignore_errors):
+    if not ignore_errors:
+        if isinstance(exception, FileNotFoundError):
+            print(f'[ERROR] [{filename}]: File not found')
+        elif isinstance(exception, PermissionError):
+            print(f'[ERROR] [{filename}]: Permission denied')
+        else:
+            print(f'[ERROR] [{filename}]: {e}')
 
 
-def print_players_list(players):
+def print_players_list(players, only_found):
     if players:
         print(f'[{file}]: Found un-whitelisted player(s)')
         for p in players:
@@ -22,7 +23,7 @@ def print_players_list(players):
         IP and Port: {p['ip_port']}
         Time: {p['time']}""")
         print(f'Total: {len(found)} ({file})')
-    else:
+    elif not only_found:
         print(f'[{file}]: No un-whitelisted players found')
 
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
 
     if ap.args['dir'] is not None:
         # Discover all *.log.gz files in the directory
-        discovered = glob.glob(ap.args['dir'] + '/*.log.gz')
+        discovered = sorted(glob.glob(ap.args['dir'] + '/*.log.gz'))
         if len(discovered) != 0:
             print(f'Discovered {len(discovered)} log file(s) in "{ap.args["dir"]}"')
             total_players = 0
@@ -45,9 +46,9 @@ if __name__ == "__main__":
                     found = logparser.parse(file)
                     total_players += len(found)
                     total_found += 1 if len(found) != 0 else 0
-                    print_players_list(found)
+                    print_players_list(found, ap.args['only_found'])
                 except Exception as e:
-                    file_exception_handler(e, file)
+                    file_exception_handler(e, file, ap.args['ignore_errors'])
                     total_error += 1
             print(f'SUMMARY: {len(discovered)} file(s) discovered, {total_found} file(s) found players, \
 {total_players} player(s) found, {total_error} error(s)')
@@ -60,8 +61,8 @@ if __name__ == "__main__":
         for file in ap.args['file']:
             try:
                 found = logparser.parse(file)
-                print_players_list(found)
+                print_players_list(found, ap.args['only_found'])
                 sys.exit()
             except Exception as e:
-                file_exception_handler(e, file)
+                file_exception_handler(e, file, ap.args['ignore_errors'])
                 sys.exit(2)
