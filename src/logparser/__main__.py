@@ -83,7 +83,7 @@ if __name__ == "__main__":
             if os.path.isdir(file):
                 files = glob.glob(file + '*.log.gz') if file.endswith('/') else glob.glob(file + '/*.log.gz')
                 print(f'"{file}": discovered {len(files)} file(s)')
-                fsummary = parse_files(files)
+                fsummary = parse_files(sorted(files))
                 summary = update_summary(fsummary, summary)
             else:
                 fsummary = parse_files([file])
