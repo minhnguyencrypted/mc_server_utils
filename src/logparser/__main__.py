@@ -1,4 +1,5 @@
 import sys
+import os
 import glob
 from colorama import init, Fore, Style
 from . import logparser
@@ -38,22 +39,36 @@ def print_summary(summary):
 
 
 def parse_files(files):
-    summary = dict(
-        total=len(files),
-        found=0,
-        player=0,
-        error=0
-    )
+    summary = init_summary(total=len(files))
     for f in files:
+        basef = os.path.basename(f)
         try:
             found = logparser.parse(f)
             summary['player'] += len(found)
             summary['found'] += 1 if len(found) != 0 else 0
-            print_players_list(found, ap.args['only_found'], f)
+            print_players_list(found, ap.args['only_found'], basef)
         except Exception as e:
-            print_file_exception(e, f, ap.args['ignore_errors'])
+            print_file_exception(e, basef, ap.args['ignore_errors'])
             summary['error'] += 1
     return summary
+
+
+def update_summary(sum1, sum2):
+    return dict(
+        total=sum2['total'] + sum1['total'],
+        found=sum2['found'] + sum1['found'],
+        player=sum2['player'] + sum1['player'],
+        error=sum2['error'] + sum1['error']
+    )
+
+
+def init_summary(**kwargs):
+    return dict(
+        total=kwargs.get('total', 0),
+        found=kwargs.get('found', 0),
+        player=kwargs.get('player', 0),
+        error=kwargs.get('error', 0)
+    )
 
 
 if __name__ == "__main__":
@@ -75,6 +90,14 @@ if __name__ == "__main__":
             sys.exit()
 
     if len(ap.args['file']) != 0:
-        smry = parse_files(ap.args['file'])
-        print_summary(smry)
-        sys.exit()
+        summary = init_summary()
+        for file in ap.args['file']:
+            if os.path.isdir(file):
+                files = glob.glob(file + '*.log.gz') if file.endswith('/') else glob.glob(file + '/*.log.gz')
+                print(f'"{file}": discovered {len(files)} file(s)')
+                fsummary = parse_files(files)
+                summary = update_summary(fsummary, summary)
+            else:
+                fsummary = parse_files([file])
+                summary = update_summary(fsummary, summary)
+        print_summary(summary)
