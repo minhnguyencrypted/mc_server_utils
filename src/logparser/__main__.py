@@ -77,18 +77,6 @@ if __name__ == "__main__":
         ap.parser.print_help()
         sys.exit()
 
-    if ap.args['dir'] is not None:
-        # Discover all *.log.gz files in the directory
-        discovered = sorted(glob.glob(ap.args['dir'] + '/*.log.gz'))
-        if len(discovered) != 0:
-            print(Style.BRIGHT + f'Discovered {len(discovered)} log file(s) in "{ap.args["dir"]}"')
-            smry = parse_files(discovered)
-            print_summary(smry)
-            sys.exit()
-        else:
-            print(f'No log files found in {ap.args["dir"]}')
-            sys.exit()
-
     if len(ap.args['file']) != 0:
         summary = init_summary()
         for file in ap.args['file']:
