@@ -1,33 +1,43 @@
 from colorama import Style, Fore
 
+RED_TEXT = Fore.RED + Style.BRIGHT
+GREEN_TEXT = Fore.GREEN + Style.BRIGHT
+YELLOW_TEXT = Fore.YELLOW
+RESET = Style.RESET_ALL
+CYAN_TEXT = Fore.CYAN + Style.BRIGHT
+
+
+def _print_player(p, verbose):
+    if verbose:
+        print(f'    Player: {YELLOW_TEXT}{p["name"]}')
+        print(f'        UUID: {p["id"]}')
+        print(f'        IP address: {CYAN_TEXT}{p["ip"]}')
+        print(f'        Time: {p["time"]}')
+    else:
+        print(f'{p["time"]}\t{p["id"]}\t{p["name"]:21}{p["ip"]}')
+
 
 def print_file_exception(exception, filename, ignore_errors):
-    msg = f'{Style.BRIGHT}{Fore.RED}[ERROR] {Style.RESET_ALL}"{filename}":'
     if not ignore_errors:
         if isinstance(exception, FileNotFoundError):
-            print(msg + f'{Style.BRIGHT} File not found')
+            print(f'"{filename}":{Style.BRIGHT} File not found')
         elif isinstance(exception, PermissionError):
-            print(msg + f'{Style.BRIGHT} Permission denied')
+            print(f'"{filename}":{Style.BRIGHT} Permission denied')
         else:
-            print(msg + f'{Style.BRIGHT} {str(exception)}')
+            print(f'"{filename}":{Style.BRIGHT} {str(exception)}')
 
 
-def print_players_list(players, file, only_found):
-    if players:
-        print(f'"{file}": ' + Style.BRIGHT + Fore.RED + 'Found un-whitelisted player(s)')
-        for p in players:
-            print(f'    Player: {Style.BRIGHT + Fore.MAGENTA}{p["name"]}')
-            print(f'        UUID: {p["id"]}')
-            print(f'        IP and Port: {Fore.YELLOW}{p["ip_port"]}')
-            print(f'        Time: {p["time"]}')
-        print(f'{Style.BRIGHT + Fore.RED}Total: {str(len(players))}{Style.RESET_ALL}')
-    elif not only_found:
-        print(f'"{file}": {Style.BRIGHT + Fore.GREEN}No un-whitelisted players found{Style.RESET_ALL}')
+def print_players_list(players, file, args):
+    if args['only_found'] and not players:
+        return
+    print(f'"{file}": {RED_TEXT if len(players) else GREEN_TEXT}{len(players)} player(s) found')
+    for p in players:
+        _print_player(p, args['verbose'])
 
 
 def print_summary(summary):
     s_total = f'{summary["total"]} file(s) searched'
-    s_found = ((Style.BRIGHT + Fore.RED) if summary['found'] else Fore.GREEN) + f'{summary["found"]} file(s) found players'
-    s_player = ((Style.BRIGHT + Fore.RED) if summary['player'] else Fore.GREEN) + f'{summary["player"]} player(s) found'
-    s_error = (Fore.YELLOW if summary['error'] else '') + f'{summary["error"]} error(s)'
-    print('SUMMARY: ', s_total, s_found, s_player, s_error, sep=' | ')
+    s_found = f'{RED_TEXT if summary["found"] else GREEN_TEXT}{summary["found"]} file(s) found players {RESET}'
+    s_player = f'{RED_TEXT if summary["player"] else GREEN_TEXT}{summary["player"]} player(s) found {RESET}'
+    s_error = f'{YELLOW_TEXT if summary["error"] else ""}{summary["error"]} error(s) {RESET}'
+    print(f'SUMMARY: {s_total} | {s_found} | {s_player} | {s_error}')

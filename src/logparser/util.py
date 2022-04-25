@@ -1,4 +1,4 @@
-def fname_to_datestr(file):
+def ftodate(file):
     # YYYY-MM-DD
     splits = file[:10].split('-')
     if len(splits) == 3:
