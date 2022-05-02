@@ -14,7 +14,7 @@ def _print_player(p, verbose):
         print(f'        IP address: {CYAN_TEXT}{p["ip"]}')
         print(f'        Time: {p["time"]}')
     else:
-        print(f'{p["time"]}\t{p["id"]}\t{p["name"]:21}{p["ip"]}')
+        print(f'{p["date"]}  {p["time"]}  {p["id"]}  {p["name"]:21}{p["ip"]}')
 
 
 def print_file_exception(exception, filename, ignore_errors):
@@ -27,10 +27,9 @@ def print_file_exception(exception, filename, ignore_errors):
             print(f'"{filename}":{Style.BRIGHT} {str(exception)}')
 
 
-def print_players_list(players, file, args):
+def print_players_list(players, args):
     if args['only_found'] and not players:
         return
-    print(f'"{file}": {RED_TEXT if len(players) else GREEN_TEXT}{len(players)} player(s) found')
     for p in players:
         _print_player(p, args['verbose'])
 

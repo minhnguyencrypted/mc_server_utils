@@ -17,7 +17,7 @@ def parse_files(files, args):
             found = log.parse(f)
             summary['player'] += len(found)
             summary['found'] += 1 if len(found) != 0 else 0
-            printf.print_players_list(found, basef, args)
+            printf.print_players_list(found, args)
         except Exception as e:
             printf.print_file_exception(e, basef, args['ignore_errors'])
             summary['error'] += 1
@@ -37,9 +37,6 @@ if __name__ == "__main__":
                 files = glob.glob(file + '*.log.gz') if file.endswith('/') else glob.glob(file + '/*.log.gz')
                 if args.args['dates']:
                     files = [f for f in files if util.ftodate(os.path.basename(f)) in args.args['dates']]
-                    print(f'"{file}": discovered {len(files)} file(s) matched the date(s)')
-                else:
-                    print(f'"{file}": discovered {len(files)} file(s)')
                 fsum = parse_files(natsorted(files), args.args)
                 sum_ = util.update_summary(fsum, sum_)
             else:
@@ -47,4 +44,3 @@ if __name__ == "__main__":
                     continue
                 fsum = parse_files([file], args.args)
                 sum_ = util.update_summary(fsum, sum_)
-        printf.print_summary(sum_)
