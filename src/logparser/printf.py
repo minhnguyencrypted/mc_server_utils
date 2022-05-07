@@ -3,35 +3,28 @@ from colorama import Style, Fore
 RED_TEXT = Fore.RED + Style.BRIGHT
 GREEN_TEXT = Fore.GREEN + Style.BRIGHT
 YELLOW_TEXT = Fore.YELLOW
-RESET = Style.RESET_ALL
 CYAN_TEXT = Fore.CYAN + Style.BRIGHT
+RESET = Style.RESET_ALL
 
 
-def _print_player(p, verbose):
+def player(p, verbose):
     if verbose:
         print(f'    Player: {YELLOW_TEXT}{p["name"]}')
         print(f'        UUID: {p["id"]}')
         print(f'        IP address: {CYAN_TEXT}{p["ip"]}')
-        print(f'        Time: {p["time"]}')
+        print(f'        Time and date: {p["time"]} {p["date"]}')
     else:
         print(f'{p["date"]}  {p["time"]}  {p["id"]}  {p["name"]:21}{p["ip"]}')
 
 
-def print_file_exception(exception, filename, ignore_errors):
+def exception(e, filename, ignore_errors):
     if not ignore_errors:
-        if isinstance(exception, FileNotFoundError):
-            print(f'"{filename}":{Style.BRIGHT} File not found')
-        elif isinstance(exception, PermissionError):
-            print(f'"{filename}":{Style.BRIGHT} Permission denied')
+        if isinstance(e, FileNotFoundError):
+            print(f'ERROR {filename}:{RED_TEXT} File not found')
+        elif isinstance(e, PermissionError):
+            print(f'ERROR {filename}:{RED_TEXT} Permission denied')
         else:
-            print(f'"{filename}":{Style.BRIGHT} {str(exception)}')
-
-
-def print_players_list(players, args):
-    if args['only_found'] and not players:
-        return
-    for p in players:
-        _print_player(p, args['verbose'])
+            print(f'ERROR {filename}:{RED_TEXT} {str(e)}')
 
 
 def print_summary(summary):

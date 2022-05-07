@@ -1,11 +1,18 @@
-def ftodate(file):
+from os.path import basename
+
+
+def _ftodate(file):
     # YYYY-MM-DD
-    splits = file[:10].split('-')
-    if len(splits) == 3:
+    s = basename(file)[:10].split('-')
+    if len(s) == 3:
         # DD/MM/YYYY
-        return f'{splits[2]}/{splits[1]}/{splits[0]}'
+        return f'{s[2]}/{s[1]}/{s[0]}'
     else:
         return None
+
+
+def filter_date(file, dates):
+    return _ftodate(file) in dates
 
 
 def update_summary(sum1, sum2):
