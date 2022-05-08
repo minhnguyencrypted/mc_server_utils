@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(prog='logparser',
 
 parser.add_argument('file', help='Log file(s) to parse', nargs='*')
 parser.add_argument('-t', '--date', help='parse specific date(s)', dest='dates', metavar='DATE', nargs='*')
-parser.add_argument('-v', '--verbose', help='verbose mode', action='store_true')
+parser.add_argument('-s', '--summary', help='print summary', action='store_true')
 parser.add_argument('--only-found', help='only display files that players were found in', action='store_true')
 parser.add_argument('--ignore-errors', help='do not display error messages', action='store_true')
 

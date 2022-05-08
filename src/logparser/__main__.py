@@ -41,6 +41,9 @@ if __name__ == "__main__":
     for k, v in found.items():
         if type(v) == list:
             for p in v:
-                printf.player(p, args.args['verbose'])
+                printf.player(p)
         else:
             printf.exception(v, k, args.args['ignore_errors'])
+
+    if args.args['summary']:
+        printf.summary(found)
