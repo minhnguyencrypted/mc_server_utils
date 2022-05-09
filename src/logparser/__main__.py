@@ -38,12 +38,15 @@ if __name__ == "__main__":
         files = filter(lambda f: util.filter_date(f, args.args['dates']), files)
 
     found = parse_files(files)
+    # Print errors
     for k, v in found.items():
+        if isinstance(v, Exception):
+            printf.exception(v, k, args.args['ignore_errors'])
+    # Print found players
+    for v in found.values():
         if type(v) == list:
             for p in v:
                 printf.player(p)
-        else:
-            printf.exception(v, k, args.args['ignore_errors'])
 
     if args.args['summary']:
         printf.summary(found)

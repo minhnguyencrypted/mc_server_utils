@@ -7,7 +7,7 @@ RESET = Style.RESET_ALL
 
 
 def player(p):
-    print(f'{p["date"]}  {p["time"]}  {p["id"]}  {p["name"]:21}{p["ip"]}')
+    print(f'{p["date"]}  {p["time"]}     {p["name"]:21}{p["ip"]:19}{p["id"]}')
 
 
 def exception(e, filename, ignore_errors):
