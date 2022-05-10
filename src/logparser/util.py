@@ -1,7 +1,7 @@
 from os.path import basename
 
 
-def _ftodate(file):
+def get_date(file):
     # YYYY-MM-DD
     s = basename(file)[:10].split('-')
     if len(s) == 3:
@@ -12,4 +12,4 @@ def _ftodate(file):
 
 
 def filter_date(file, dates):
-    return _ftodate(file) in dates
+    return get_date(file) in dates

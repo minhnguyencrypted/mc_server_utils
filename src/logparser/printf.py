@@ -1,4 +1,5 @@
 from colorama import Style, Fore
+
 RED_TEXT = Fore.RED + Style.BRIGHT
 GREEN_TEXT = Fore.GREEN + Style.BRIGHT
 YELLOW_TEXT = Fore.YELLOW
@@ -7,7 +8,8 @@ RESET = Style.RESET_ALL
 
 
 def player(p):
-    print(f'{p["date"]}  {p["time"]}     {p["name"]:21}{p["ip"]:19}{p["id"]}')
+    date = p['date'] if p['date'] else 'N/A'
+    print(f'{date:10}  {p["time"]}     {p["name"]:21}{p["ip"]:19}{p["id"]}')
 
 
 def exception(e, filename, ignore_errors):

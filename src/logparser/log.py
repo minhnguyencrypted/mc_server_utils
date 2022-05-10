@@ -1,16 +1,11 @@
 import gzip
-from os.path import basename
-
-
-def _get_date(file_name):
-    parsed_date = basename(file_name).split('-')
-    return f'{parsed_date[2]}/{parsed_date[1]}/{parsed_date[0]}'
+from .util import get_date
 
 
 def parse(file_name):
     found = []
     f = gzip.open(file_name, 'rb')
-    date = _get_date(file_name)
+    date = get_date(file_name)
     for l in f:
         line = l.strip().decode('utf-8')
         if line.endswith('lost connection: You are not whitelisted on this server!') and line[12:30] == 'Server thread/INFO':
